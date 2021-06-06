@@ -1,0 +1,41 @@
+<script src="https://unpkg.com/vue@next"></script>
+<div id = "data" class="demo">
+
+  <br><br>
+  <input type="password" placeholder="Enter your password" v-model="password">
+  
+  <p v-if ="password.length<1 ">Please enter a password.</p>
+  <p v-else-if ="password.length>0 && password.length<8">Please enter a longer password.</p>
+  <p v-else="password.lenght>8">Awesome! your password is longer than 8 characters.</p>
+   
+  <ol>
+    <li v-for = "i in categories">
+      {{i.name}}
+      <ul>
+        <li v-for = "j in i.sub" >{{j}}</li>
+      </ul>
+    </li>
+  </ol>
+</div>
+
+
+const App = {
+  data() {
+    return {
+      password: '',
+      categories: [
+        { name: 'Javascript', sub: ['Vue.js', 'React', 'Angular2']},
+        { name: 'Database', sub: ['MySQL', 'PostgreSQL', 'MariaDB']},
+        { name: 'Javascript', sub: ['Operating System', 'Linux', 'Windows']}
+      ]
+    }
+  },
+  methods : {
+    addUser: function(){
+      categories.push({})
+  }
+    
+  }
+ 
+}
+Vue.createApp(App).mount('#data')

@@ -1,0 +1,25 @@
+h2 {
+    font-style: italic;
+    font-size: 50;
+    font-family: monospace;
+    color:maroon
+}
+
+body{
+    background-color:brown;
+}
+/* dont have to identify the tag name, just class name is enough */
+.unlist {
+    color: indianred;
+}
+li{
+   color: floralwhite;
+}
+
+/* the subset has more prio */
+li b{
+    color: orangered; 
+}
+b{
+    color: olive;
+}

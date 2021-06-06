@@ -1,0 +1,1067 @@
+/* 1 */
+{
+    "_id" : ObjectId("5aa1020ce2f50ebadb85d97a"),
+    "firstName" : "Bob",
+    "lastName" : "Cat",
+    "email" : "bob@mail.com",
+    "createdDate" : "2018-03-08T18:00:00.000Z"
+}
+
+/* 2 */
+{
+    "_id" : ObjectId("5aa1021ce2f50ebadb85d97f"),
+    "firstName" : "Tom",
+    "lastName" : "Cat",
+    "email" : "bob@mail.com",
+    "createdDate" : "2018-03-08T18:01:00.000Z"
+}
+
+/* 3 */
+{
+    "_id" : ObjectId("5aa13176ebe9b40749adc61f"),
+    "firstName" : "John",
+    "lastName" : "Doe",
+    "email" : "john@mail.com",
+    "createdDate" : ISODate("2018-03-08T12:49:58.882Z"),
+    "__v" : 0
+}
+
+/* 4 */
+{
+    "_id" : ObjectId("5aa131d2ebe9b40749adc620"),
+    "firstName" : "Jane",
+    "lastName" : "Doe",
+    "email" : "jane@mail.com",
+    "createdDate" : ISODate("2018-03-08T12:51:30.009Z"),
+    "__v" : 0
+}
+
+/* 5 */
+{
+    "_id" : ObjectId("5aa13eb02235da08f4bd3fb5"),
+    "firstName" : "timmy",
+    "lastName" : "time",
+    "email" : "timmy@mail.com",
+    "createdDate" : ISODate("2018-03-08T13:46:24.997Z"),
+    "__v" : 0
+}
+
+/* 6 */
+{
+    "_id" : ObjectId("5aa14808550d8a0a7c2443b8"),
+    "firstName" : "Robert",
+    "lastName" : "Birt",
+    "email" : "robert@mail.com",
+    "createdDate" : ISODate("2018-03-08T14:26:16.484Z"),
+    "__v" : 0
+}
+
+/* 7 */
+{
+    "_id" : ObjectId("5aa14a4c550d8a0a7c2443bb"),
+    "firstName" : "Mike",
+    "lastName" : "Mee",
+    "email" : "mike@mail.com",
+    "createdDate" : ISODate("2018-03-08T14:35:56.282Z"),
+    "__v" : 0
+}
+
+/* 8 */
+{
+    "_id" : ObjectId("5aa1f9d0384ba605ae83de1e"),
+    "firstName" : "Ethan",
+    "lastName" : "Hawk",
+    "email" : "ethan@mail.com",
+    "createdDate" : ISODate("2018-03-09T03:04:48.309Z"),
+    "__v" : 0
+}
+
+/* 9 */
+{
+    "_id" : ObjectId("5aa20016384ba605ae83de1f"),
+    "firstName" : "Ken",
+    "lastName" : "Doe",
+    "email" : "ken@mail.com",
+    "createdDate" : ISODate("2018-03-09T03:31:34.977Z"),
+    "__v" : 0
+}
+
+/* 10 */
+{
+    "_id" : ObjectId("5aa201a7384ba605ae83de20"),
+    "firstName" : "Dany",
+    "lastName" : "Dawn",
+    "email" : "dant@mail.com",
+    "createdDate" : ISODate("2018-03-09T03:38:15.447Z"),
+    "__v" : 0
+}
+
+/* 11 */
+{
+    "_id" : ObjectId("5aa201c4384ba605ae83de21"),
+    "firstName" : "Debby",
+    "lastName" : "Hawk",
+    "email" : "debby@mail.com",
+    "createdDate" : ISODate("2018-03-09T03:38:44.042Z"),
+    "__v" : 0
+}
+
+
+//router/index.js
+import { createRouter, createWebHistory } from 'vue-router'
+import firebase from 'firebase'
+import Users from '../views/Users.vue'
+import About from '../views/About.vue'
+import AddUser from '../views/AddUser.vue'
+import UpdateUser from '../views/UpdateUser.vue'
+import SignIn from '../views/SignIn.vue'
+import SignUp from '../views/SignUp.vue'
+
+
+const routerHistory = createWebHistory()
+
+const routes = [
+
+    {
+        path: '/',
+        redirect: '/signin'
+    },
+    {
+        path: '/:catchAll(.*)',
+        redirect: '/signin'
+    },
+    {
+        path: '/signin',
+        name: SignIn,
+        component: SignIn
+    },
+    {
+        path: '/signup',
+        name: SignUp,
+        component: SignUp
+    },
+    {
+        path: '/users',
+        name: Users,
+        component: Users,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/about',
+        name: About,
+        component: About,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/adduser',
+        name: AddUser,
+        component: AddUser,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/updateuser/:userId',
+        name: 'UpdateUser',
+        component: UpdateUser,
+        meta: {
+            requiresAuth: true
+        }
+    }
+]
+
+const router = createRouter({
+    history: routerHistory,
+    routes
+})
+
+
+router.beforeEach((to, from, next) => {
+    const currentUser = firebase.auth().currentUser
+    const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+    if (requiresAuth && !currentUser) {
+      console.log("You are not authorized to access this area.");
+      next('signin')
+    } else if (!requiresAuth && currentUser) {
+      console.log("You are authorized to access this area.");
+      next('users')
+    } else {
+      next()
+    }
+  })
+
+export default router
+//main.js
+import { createApp } from 'vue'
+import firebase from 'firebase'
+import App from './App.vue'
+import router from './router'
+import './index.css'
+//import 'bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css'
+
+let app
+
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "",
+    authDomain: "egco427-lecture.firebaseapp.com",
+    databaseURL: "https://egco427-lecture.firebaseio.com",
+    projectId: "egco427-lecture",
+    storageBucket: "egco427-lecture.appspot.com",
+    messagingSenderId: "",
+    appId: ""
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+firebase.auth().onAuthStateChanged((user)=>{
+    if(!app){
+        app = createApp(App).use(router).mount('#app')
+    }
+})
+
+
+//views/Users.vue
+<template>
+    <div class="container">
+        <h1>List of Users</h1>
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search for..." v-model="search">
+                <span class="input-group-btn">
+                  &nbsp;&nbsp;<button class="btn btn-primary" type="button">
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                    Search
+                  </button>
+                </span>
+              </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
+          </div><!-- /.row -->
+        </div>
+        <br>
+        <table class="table table-stripped table-borderes">
+            <thead>
+                <tr>
+                <th class="center">First Name</th>
+                <th class="center">Last Name</th>
+                <th class="center">Email</th>
+                <th class="center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- <tr v-for="user_alias in filterUsers" v-bind:key="user_alias.id"> -->
+                <tr v-for="user_alias in filterUsers" v-bind:key="user_alias.id">
+                    <td class="text-left">{{ user_alias.firstName }}</td>
+                    <td class="text-left">{{ user_alias.lastName }}</td>
+                    <td class="text-left">{{ user_alias.email }}</td>
+                    <td class="text-left">
+                        <!-- <router-link :to="{ path: 'updateuser', name: 'UpdateUser', params:{userId: user_alias._id} }">
+                          <button class="btn btn-xs btn-warning">Edit</button>&nbsp;
+                        </router-link>    -->
+                         <router-link to="/">
+                          <!-- <button class="btn btn-xs btn-danger" data-toggle="modal" data-target=".bd-example-modal-sm" @click="DELETE(user_alias._id)"><span class="glyphicon glyphicon-trash">Delete</span></button> -->
+                          <button class="btn btn-xs btn-danger" data-toggle="modal" data-target=".bd-example-modal-sm" @click="delUser(user_alias._id)"><span class="glyphicon glyphicon-trash">Delete</span></button>
+                        </router-link>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <router-link to="/adduser">
+            <button class="btn btn-large btn-block btn-success full-width">Add User</button>
+        </router-link>
+        <br>
+    <div class="modal fade bd-example-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title" id="exampleModalLabel">Are you sure?</h1>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to delete this item? </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <router-link to="/users">
+                 <button type="button" class="btn btn-danger" @click="delUser(uid)">Delete</button>
+              </router-link>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+</template>
+
+<script>
+import axios from 'axios'
+import $ from 'jquery'
+export default {
+  name: 'Users',
+
+  data() {
+    return {
+        Users: [],
+        search: '',
+        uid: ''
+    }
+  },
+  mounted () {
+      axios.get('http://localhost:5000/users')
+        .then((response)=>{
+            console.log(response.data)
+            this.Users = response.data
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+  },
+  computed : {
+    filterUsers: function(){
+        return this.Users.filter((user)=>{
+            return user.firstName.match(this.search)
+        })
+    }
+  },
+  methods: {
+      DELETE(id) {
+          this.uid = id
+      },
+      delUser(UserId){
+          axios.delete('http://localhost:5000/users/'+UserId)
+        .then(()=>{
+            console.log('Delete userId: '+UserId)
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+        window.location.reload()
+      }
+  }
+}
+</script>
+
+
+
+//views/AddUser.vue
+<template>
+  <div class="container">
+    <form>
+      <div class="well">
+        <h4>Add User</h4>
+        <div class="form-group" >
+          <label class="pull-left">First Name: </label>
+          <input type="text" class="form-control" placeholder="First Name" v-model="User.firstName">
+        </div>
+        <div class="form-group" >
+          <label class="pull-left">Last Name: </label>
+          <input type="text" class="form-control" placeholder="Last Name" v-model="User.lastName">
+        </div>
+        <div class="form-group" >
+          <label class="pull-left">Email: </label>
+          <input type="text" class="form-control" placeholder="Email" v-model="User.email">
+        </div>
+      </div>
+      
+      <button type="submit" class="btn btn-large btn-block btn-primary full-width" @click="addToAPI">Submit</button>
+      <router-link to="/">
+        <button class="btn btn-large btn-block btn-success full-width">Go to User List Page</button>  
+      </router-link>  
+    </form>
+  </div>
+
+</template>
+<script>
+import axios from 'axios'
+export default {
+  name: 'AddUser',
+  data() {
+    return {
+        User: {
+            firstName: '',
+            lastName: '',
+            email: ''
+        } 
+        
+    }
+  },
+  methods: {
+      addToAPI () {
+          let newUser ={
+              firstName: this.User.firstName,
+              lastName: this.User.lastName,
+              email: this.User.email
+          }
+        axios.post('http://localhost:5000/users', newUser)
+        .then((response)=>{
+            console.log(response.data)
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+      }
+  }
+}
+</script>
+
+
+//views/UpdateUser.vue
+<template>
+  <div class="container">
+    <form>
+      <div class="well">
+        <h4>Update User</h4>
+        <div class="form-group" >
+          <label class="pull-left">First Name: </label>
+          <input type="text" class="form-control" placeholder="First Name" v-model="User.firstName">
+        </div>
+        <div class="form-group" >
+          <label class="pull-left">Last Name: </label>
+          <input type="text" class="form-control" placeholder="Last Name" v-model="User.lastName">
+        </div>
+        <div class="form-group" >
+          <label class="pull-left">Email: </label>
+          <input type="email" class="form-control" placeholder="Email" v-model="User.email">
+        </div>
+      </div>
+      <router-link to="/">
+        <button type="submit" class="btn btn-large btn-block btn-primary full-width" @click="updateToAPI">Submit</button>
+        <button class="btn btn-large btn-block btn-success full-width">Back to User Page</button>
+      </router-link>
+    </form>
+  </div>  
+</template>
+<script>
+import axios from 'axios'
+export default {
+    name: 'UpdateUser',
+    data() {
+        return {
+            User: {
+                firstName: '',
+                lastName: '',
+                email: ''
+            }
+        } 
+    },
+    methods: {
+        updateToAPI(){
+            //console.log(this.$route.params.userId)
+            let newUser = {
+                firstName: this.User.firstName,
+                lastName: this.User.lastName,
+                email: this.User.email
+            }
+            axios.post('http://localhost:5000/users/'+this.$route.params.userId, newUser)
+                .then((response)=>{
+                    console.log(response)
+                })
+                .catch((error)=>{
+                    console.log(error)
+                })
+        }
+    },
+    mounted() {
+        axios.get('http://localhost:5000/users/'+this.$route.params.userId)
+            .then((response)=>{
+                //console.log(response.data)
+                this.User = response.data
+            })
+            .catch((error)=>{
+                console.log(error)
+            })
+    },
+}
+</script>
+<style scoped>
+h1, h2 {
+  font-weight: normal;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+</style>
+
+
+//views/SignIn.vue
+<template>
+    <div class="container">
+        <h1>Signin</h1>
+        <br><br>
+        <div class="row">
+            <div class="col-lg-3"/>
+            <div class="col-lg-6">
+                <input type="email" v-model="formData.email" class="form-control" placeholder="email"/> 
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="password" v-model="formData.password" class="form-control" placeholder="password"/>
+                <br> 
+                <button class="btn btn-success btn-block full-width" @click="signIn">Sign In</button>
+            </div>
+            <div class="col-lg-3"/>
+        </div>
+    </div>
+</template>
+<script>
+import firebase from 'firebase'
+export default {
+    name: 'SignIn',
+    data() {
+        return {
+            formData: {
+                email: '',
+                password: ''
+            },
+            errorMessgae: '',
+            succeessMessage: ''
+        }
+    },
+    methods: {
+        signIn() {
+            firebase.auth().signInWithEmailAndPassword(this.formData.email, this.formData.password)
+                .then( user =>{
+                    this.$router.replace('/users')
+                    this.succeessMessage = "Success" 
+                })
+                .catch(error =>{
+                    alert(error.message)
+                    this.errorMessgae = error.message
+                })
+        }
+    },
+}
+</script>
+
+<style scoped>
+h1, h2 {
+  font-weight: normal;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+</style>
+
+
+//views/SignUp.vue
+<template>    
+    <div class="container">
+        <h2>SignUp</h2>
+        <br><br>
+        <div class="row">
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-md-offset-3"/>
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-md-offset-3">
+                <input type="email" v-model="formData.email" class="form-control" placeholder="email">
+                <br>
+                <input type="password" v-model="formData.password" class="form-control" placeholder="password">
+                <br>
+                <!-- <router-link to="/users"> -->
+                  <button class="btn btn-success" @click="signUp">SignUp</button>
+                <!-- </router-link> -->
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-md-offset-3"/>
+        </div>
+    </div>
+</template>
+<script>
+import firebase from 'firebase'
+export default {
+    data() {
+        return {
+            formData: {
+                email: '',
+                password: ''
+            },
+        }
+    },
+    methods: {
+        signUp() {
+            firebase.auth().createUserWithEmailAndPassword(this.formData.email, this.formData.password)
+                .then(user => {
+                    this.$router.replace('/users')
+                })
+                .catch(e =>{
+                    alert(e.message)
+                })
+        }
+    },
+}
+</script>
+<style scoped>
+h1, h2 {
+  font-weight: normal;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+</style>
+
+
+//App.vue
+<template>
+  <div>
+    <nav class="navbar navbar-light bg-light">
+      <a class="navbar-brand" href="/">
+      <img src="./assets/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+      EGCO427
+        <router-link to="/users">List of Users</router-link>
+        <!-- <a href="/users">List</a> -->
+        <button class="btn btn-success" @click="logout">Logout</button>
+    
+    </nav>
+    <router-view/>
+  </div>
+</template>
+
+<script>
+import firebase from 'firebase'
+export default {
+  name: 'App',
+  components: {
+   
+  },
+  methods: {
+    logout() {
+      firebase.auth().signOut()
+        .then(()=>{
+          this.$router.replace('/signin')
+        })
+        .catch((e)=>{
+          alert(e.message)
+        })
+    }
+  },
+}
+</script>
+
+//index.html
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+
+
+//vue+firebase
+//App.vue
+<template>
+  <img alt="Vue logo" src="./assets/logo.png" />
+  <router-view/>
+</template>
+
+<script>
+import HelloWorld from './components/HelloWorld.vue'
+
+export default {
+  name: 'App',
+  components: {
+
+  }
+}
+</script>
+
+
+//main.js
+import { createApp } from 'vue'
+import firebase from 'firebase'
+import App from './App.vue'
+import './index.css'
+import router from './router'
+import 'bootstrap/dist/css/bootstrap.min.css'
+
+let app
+
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+///API KEY
+
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+firebase.auth().onAuthStateChanged((user)=>{
+    if(!app){
+        app = createApp(App).use(router).mount('#app')
+    }
+})
+
+//router/index.js
+import { createRouter, createWebHistory } from 'vue-router'
+import firebase from 'firebase'
+import MovieList from '../components/MovieList.vue'
+import SignIn from '../components/SignIn.vue'
+import SignUp from '../components/SignUp.vue'
+
+const routerHistory = createWebHistory()
+
+const routes = [
+    {
+        path: '/',
+        redirect: '/signin'
+      },
+      {
+        path: '/:catchAll(.*)',
+        redirect: '/signin'
+      },
+      {
+        path: '/movies',
+        name: 'MovieList',
+        component: MovieList,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/signin',
+        name: 'SignIn',
+        component: SignIn
+      },
+      {
+        path: '/signup',
+        name: 'Signp',
+        component: SignUp
+      }
+]
+
+const router = createRouter({
+	history: createWebHistory(),
+	routes
+})
+
+
+router.beforeEach((to, from, next) => {
+    const currentUser = firebase.auth().currentUser
+    const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+    if (requiresAuth && !currentUser) {
+      console.log("You are not authorized to access this area.");
+      next('signin')
+    } else if (!requiresAuth && currentUser) {
+      console.log("You are authorized to access this area.");
+      next('movies')
+    } else {
+      next()
+    }
+  })
+
+export default router
+
+//components/SignIn.vue
+<template>
+  <div class="container">
+    <div class="row">
+        <h2>Signin</h2>
+        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-md-offset-3"/>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-md-offset-3">
+            <input type="email" v-model="formData.email" class="form-control" placeholder="email">
+            <br>
+            <input type="password" v-model="formData.password" class="form-control" placeholder="password">
+            <br>
+            <button class="btn btn-success btn-block full-width" @click="signIn">Signin</button>
+        </div>
+    </div>
+    <br>
+    <div class="container">
+      <div class="row">
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary">Facebook</button>
+          <button type="button" class="btn btn-warning" @click="signInGoogle">Google</button>
+          <button type="button" class="btn btn-info">Twitter</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import firebase from 'firebase'
+export default {
+  name: 'SignIn',
+  data () {
+    return {
+      formData: {
+        email: '',
+        password: ''
+      }
+    }
+  },
+  methods: {
+    signIn () {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.formData.email, this.formData.password)
+        .then(user => {
+          this.$router.replace('/movies')
+        })
+        .catch(e => {
+          alert(e.message)
+        })
+    },
+    signInGoogle () {
+      var provider = new firebase.auth.GoogleAuthProvider()
+      // firebase.auth().signInWithRedirect(provider).then((result) =>  {
+      firebase.auth().signInWithPopup(provider).then((result) =>  {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = result.credential.accessToken
+        // The signed-in user info.
+        var user = result.user
+        // console.log(user)
+        this.$router.replace('/movies')
+      }).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code
+        var errorMessage = error.message
+        // The email of the user's account used.
+        var email = error.email
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential
+        // ...
+      })
+    }
+  },
+  created () {}
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+h1,
+h2 {
+  font-weight: normal;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin: 0 10px;
+}
+
+a {
+  color: #42b983;
+}
+</style>
+
+
+//components/SignUp.vue
+<template>
+    <div class="row">
+        <h2>SignUp</h2>
+        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-md-offset-3"/>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-md-offset-3">
+
+            <input type="email" v-model="formData.email" class="form-control" placeholder="email">
+            <br>
+            <input type="password" v-model="formData.password" class="form-control" placeholder="password">
+            <br>
+            <button class="btn btn-success" @click="signUp">SignUp</button>
+        </div>
+    </div>
+</template>
+<script>
+import firebase from 'firebase'
+export default {
+  name: 'SignUp',
+  data () {
+    return {
+      formData: {
+        email: '',
+        password: ''
+      }
+    }
+  },
+  methods: {
+    signUp () {
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(
+          this.formData.email,
+          this.formData.password
+        )
+        .then(user => {
+          this.$router.replace('/movies')
+        })
+        .catch(e => {
+          alert('oops' + e.message)
+        })
+    }
+  },
+  created () {}
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+h1,
+h2 {
+  font-weight: normal;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+</style>
+
+
+//components/MovieList.vue
+<template>
+  <div class="movielist">
+    <h4>{{ msg }}</h4>
+    <div class="container">
+      <button @click="logout" class="btn btn-default"><span class="glyphicon glyphicon-log-out"></span> Logout</button>
+    </div>
+    <br>
+    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"/>
+    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+      <div class="panel panel-success" >
+      <div class="panel-heading">
+        <h3 class="panel-title">Add New Movie</h3>
+      </div>
+      <div class="panel-body">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Add New Item" v-model='movie' @keyup.enter='addMovie'>
+          <span class="input-group-btn">
+            <button class="btn btn-success" type="button" @click="addMovie"><span class="glyphicon glyphicon-plus"/> Add</button>
+          </span>
+        </div><!-- /input-group -->
+      </div>
+      </div>
+    <div class="panel panel-info" >
+      <div class="panel-heading">
+        <h3 class="panel-title">List of Movies (Update/Delete)</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+          <li v-for="(movieName,key) in movies" :key='key'>
+              <div class="row">
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                  <p><b>{{movieName.name}}</b></p>
+                </div>
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                  <input type="text" v-model="editName[key]" class="form-control" @keyup.enter="editMovie(key)" placeholder="Update Movie Name"/>
+                </div>
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                  <button class="btn btn-sm btn-warning" @click="editMovie(key)"><span class="glyphicon glyphicon-pencil"></span> Update</button>
+                  <button class="btn btn-sm btn-danger" @click="deleteMovie(key)"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+                </div>
+              </div>
+              <br>
+          </li>
+        </ul>
+      </div>
+    </div>
+    </div>
+    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"/>
+  </div>
+</template>
+
+<script>
+import firebase from 'firebase'
+export default {
+  name: 'MovieList',
+  data () {
+    return {
+      msg: 'Vue.js CRUD Example',
+      movie: null,
+      movies: {},
+      editName: []
+    }
+  },
+  created () {
+    console.log('start')
+    firebase.database().ref('movies').on('value', (snapshot) => {
+      // console.log(snapshot.val())
+      this.movies = snapshot.val()
+    })
+  },
+  methods: {
+    addMovie () {
+      firebase.database().ref('movies').push({name: this.movie})
+        .then((data) => {
+          console.log(data)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+    editMovie (key) {
+      firebase.database().ref('movies/' + key).set({
+        name: this.editName[key]
+      })
+      this.editName = []
+    },
+    deleteMovie (key) {
+      firebase.database().ref('movies/' + key).remove()
+    },
+    logout () {
+      firebase.auth().signOut()
+        .then(() => {
+          this.$router.replace('/signin')
+        })
+        .catch((e) => {
+          alert(e.message)
+        })
+    }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+h1, h2 {
+  font-weight: normal;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  /* display: inline-block; */
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+</style>
+

@@ -1,0 +1,18 @@
+Vite
+npm run dev
+
+mongo
+mongod --dbpath data
+
+server
+node server.js
+
+
+npm i vue-router@next //ใช้กำหนด path ในการเปลี่ยนหน้า
+npm i vue-router@next bootstrap jquery popper.js
+
+create new vite project
+npm init vite-app vitefirebase
+then cd into folder
+npm install
+npm install bootstrap jquery popper.js

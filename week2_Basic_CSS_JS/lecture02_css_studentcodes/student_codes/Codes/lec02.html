@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="lec02.css">
+    <style type="text/css" rel="stylesheet">
+        h1 {
+            font-size: 36 pt;
+            color: cornsilk;
+        }
+        body{
+            background-color:darkcyan;
+        }
+        #test5{
+            color: darkorchid;
+        }
+        /* infile style has 2nd priority. the less is external style sheet = .css file*/
+    </style>
+</head>
+<!-- inline style has highest priority -->
+<body style="background-color: burlywood;"> 
+    <h1>Hello world</h1>
+    <h2 class="unlist">welcome to web</h2>
+    <div>
+        <ul>
+            <li>
+                <b>test1</b>
+            </li>
+            <li>test2</li>
+            <li>test3</li>
+        </ul>
+        <ol>
+            <li class="unlist" >test4</li>
+            <li id="test5">test5</li>
+            <li>test6</li>
+        </ol>
+    </div>
+</body>
+</html>

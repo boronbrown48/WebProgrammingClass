@@ -1,0 +1,50 @@
+body {
+    background: url('https://www.wallpaperflare.com/static/669/415/824/photography-nature-mountains-path-wallpaper.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+  }
+
+  .pic {
+    width:75%;
+    display: block;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 8 rem;
+
+  }
+  .row{
+    display: flex;
+    align-items: center;
+  }
+  #aboutme{
+      align-content: center;
+      text-align: center;
+    
+  }
+  div.gallery {
+    margin: 5px;
+    float: center;
+    background-color: white;
+    width: 400px;
+    height: 400px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  div.gallery:hover {
+    border: 1px solid #777;
+  }
+  
+  div.gallery img {
+      margin-top: 20px;
+    width: 100%;
+    height: auto;
+  }
+  
+  div.desc {
+    padding: 10%;
+    text-align: center;
+  }

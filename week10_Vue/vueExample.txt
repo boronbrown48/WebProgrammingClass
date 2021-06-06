@@ -1,0 +1,55 @@
+<script src="https://unpkg.com/vue@next"></script>
+<div id="app" class = "demo">
+  <p>{{message}}</p>
+  <button v-on:click.once="clickButton('hello world')">Click Here</button>
+  <button @click.prevent="clickButton('hello world')">Click Here2</button>
+  <a href="http://www.google.com" v-on:click.prevent="clickButton('hello world')" target="_blank">link here</a>
+  <p v-bind:title='url'>Google</p>
+  <p :title='url'>Google</p>
+  <input type="text" v-on:keyup.shift="clickButton('hello')"/>
+  <button v-on:click.shift="clickButton('hello world')">Click Here</button>
+  <input type="text" v-model.number.lazy="age"/>
+  <br>
+  <p>Enter : {{age}}</p>
+  <p>Type of : {{typeof age}}</p>
+  <div v-html="html"></div>
+  <h1>{{title}}</h1>
+  <button @click="title = 'matrix'">Change title</button>
+  <p v-if="item>10">{{item}} in stock</p>
+  <p v-else-if="item>0">Hurry up. few item left</p>
+  <p v-else>out of stock</p>
+  
+  <p v-show="!isShow">Invisible</p>
+  <p v-show="isShow">Visible</p>
+  
+  <p v-cloak>{{msg}}</p>  
+</div>
+
+const Counter = {
+  data() {
+    return {
+      message :"Hello",
+      url:'www.google.com',
+      name:"",
+      age:20,
+      html : '<h1>Hellowwww</h1>',
+      title:"Star War",
+      item:0,
+      isShow:true,
+      msg:'',
+      msg2:[]
+    }
+  },
+  methods:{
+  clickButton: function(message){
+    alert(message)
+  },
+  mounted(){
+    setTimeout(()=>{
+      this.msg = 'hello kai'
+    },2000)
+  }
+  }
+}
+
+Vue.createApp(Counter).mount('#app')
